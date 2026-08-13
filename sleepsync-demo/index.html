@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="SleepSync 수면 준비도 반응 제어 데모" />
+    <title>SleepSync | 더 자연스러운 잠의 시작</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-mode="sleep">
+    <main id="sleep-mode" class="product-demo">
+      <header class="product-header">
+        <a class="wordmark" href="../portfolio-dashboard/index.html" aria-label="포트폴리오로 돌아가기"><span class="wordmark-symbol">S</span>SleepSync</a>
+        <div class="header-actions">
+          <span class="simulation-note">시연 데이터</span>
+          <button id="open-insight-button" class="text-link" type="button">작동 원리 보기 <span>→</span></button>
+        </div>
+      </header>
+
+      <section id="sleep-summary" class="sleep-summary" aria-live="polite">
+        <p id="sleep-context" class="context-line">오늘 밤의 수면 리듬</p>
+        <p id="sleep-state-label" class="sleep-state-label">준비를 시작할게요</p>
+        <strong id="sleep-readiness" class="readiness-number">0<span>%</span></strong>
+        <h1 id="sleep-message">몸의 신호를 읽고, 잠들기 좋은 리듬을 맞춥니다.</h1>
+        <p id="sleep-detail" class="sleep-detail">시나리오를 선택하고 세션을 시작하면 베개가 반응에 맞춰 자극을 조절합니다.</p>
+      </section>
+
+      <section id="sleep-progress" class="sleep-progress" aria-label="수면 준비 흐름">
+        <ol id="sleep-progress-list">
+          <li class="active"><span>01</span><b>감지</b></li>
+          <li><span>02</span><b>이완</b></li>
+          <li><span>03</span><b>입면 준비</b></li>
+          <li><span>04</span><b>휴식</b></li>
+        </ol>
+      </section>
+
+      <section id="sleep-stimulus" class="sleep-stimulus" aria-label="현재 수면 환경 설정">
+        <div class="stimulus-item"><span>사운드</span><strong id="sleep-sound">0 <small>dBA</small></strong></div>
+        <div class="stimulus-item"><span>미세진동</span><strong id="sleep-vibration">0 <small>단계</small></strong></div>
+        <div class="stimulus-item"><span>접촉면 온도</span><strong id="sleep-thermal">29 <small>°C</small></strong></div>
+      </section>
+
+      <section class="session-bar" aria-label="세션 제어">
+        <label class="scenario-picker" for="scenario-select"><span>오늘의 상태</span><select id="scenario-select"><option value="tense">긴장된 상태</option><option value="normal" selected>보통 상태</option><option value="relaxed">편안한 상태</option></select></label>
+        <div class="session-actions"><button id="start-button" class="primary-action" type="button">세션 시작</button><button id="pause-button" class="secondary-action" type="button" disabled>일시정지</button><button id="reset-button" class="text-action" type="button">다시 시작</button></div>
+        <p id="status-label" class="session-status"><i id="status-dot"></i> 준비 중</p>
+      </section>
+
+      <footer class="product-footer"><span>SleepSync는 시연용 반응 제어 프로토타입입니다.</span><span id="session-time">00:00</span></footer>
+    </main>
+
+    <main id="insight-mode" class="insight-demo" hidden>
+      <header class="insight-header"><button id="close-insight-button" class="back-link" type="button">← 시연 화면으로</button><span>SleepSync / Insight</span><span class="simulation-note">시연 데이터</span></header>
+      <section class="insight-lead"><p>제품이 하는 일을 데이터로 확인합니다.</p><h2>신호를 읽고, 준비도를 계산하고,<br />안전 범위에서 자극을 조절합니다.</h2><p class="insight-caption">이 화면은 발표 중 질문이 있을 때만 여는 기술 근거 화면입니다. 의료 진단 또는 치료 결과를 의미하지 않습니다.</p></section>
+
+      <section class="insight-status"><div><span>현재 준비도</span><strong id="readiness-value">0%</strong></div><div><span>현재 단계</span><strong id="state-chip">각성</strong></div><div><span>제어 상태</span><strong id="control-mode">STANDBY</strong></div><div><span>세션 진행</span><strong id="insight-time">00:00 / 01:30</strong></div></section>
+
+      <section class="analysis-section signal-section"><div class="section-title"><p>01 / 신호 변화</p><h3>압력, 움직임, 온도의 시간 변화</h3></div><div class="signal-legend"><span><i class="pressure-line"></i>압력 안정도</span><span><i class="motion-line"></i>미세 움직임</span><span><i class="thermal-line"></i>접촉면 온도</span></div><div class="chart-wrap"><svg id="telemetry-chart" viewBox="0 0 900 230" preserveAspectRatio="none" role="img" aria-label="90초 센서 시계열 그래프"></svg></div></section>
+
+      <section class="analysis-grid"><article id="feature-panel" class="analysis-section"><div class="section-title"><p>02 / 신호 정리</p><h3>최근 30초의 변화</h3></div><div id="feature-content" class="data-list"></div></article><article id="inference-panel" class="analysis-section"><div class="section-title"><p>03 / 판단 근거</p><h3>수면 준비도 추정</h3></div><p id="inference-rationale" class="analysis-copy"></p><div id="contribution-bars" class="contribution-bars"></div></article><article id="control-panel" class="analysis-section"><div class="section-title"><p>04 / 안전 제어</p><h3>지금의 환경 설정</h3></div><div class="control-values"><span>사운드 <strong id="sound-output">0 dBA</strong></span><span>진동 <strong id="vibration-output">0 /5</strong></span><span>온도 <strong id="thermal-output">29 °C</strong></span></div><p id="control-reason" class="analysis-copy"></p><div id="safety-flags" class="safety-flags"></div><label class="confidence-control" for="confidence-toggle"><input id="confidence-toggle" type="checkbox" /> 센서 신뢰도 낮음 시뮬레이션</label><button id="stop-button" class="safety-stop" type="button">안전하게 멈추기</button></article></section>
+
+      <section id="kpi-panel" class="analysis-section"><div class="section-title"><p>세션 결과</p><h3>검증 지표</h3></div><div id="kpi-content" class="kpi-grid"></div></section>
+      <section id="compare-panel" class="analysis-section"><div class="section-title"><p>시나리오 비교</p><h3>같은 90초, 다른 반응</h3></div><div id="compare-content" class="compare-content"></div></section>
+      <section class="analysis-grid lower-analysis"><article class="analysis-section"><div class="section-title"><p>제어 기록</p><h3>세션 로그</h3></div><div id="event-log" class="event-log"></div><button id="export-log" class="text-link export-link" type="button">JSON 내보내기 →</button></article><article id="trust-panel" class="analysis-section"><div class="section-title"><p>데모의 경계</p><h3>무엇을 검증하는가</h3></div><div id="trust-content" class="trust-content"></div></article></section>
+    </main>
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>
